@@ -15,11 +15,11 @@ service KeyManagerExcluiGrpcService{
   rpc exclui (ExcluiChavePixRequest) returns (ExcluiChavePixResponse){}
 }
 
-service KeyMananerBuscaChavePorIDGrpcService{
+service KeyManagerBuscaChavePorIDGrpcService{
   rpc buscaChavePorID (BuscaChavePorIDPixRequest) returns (DetalhesChavePixResponse){}
 }
 
-service KeyMananerBuscaChaveGrpcService{
+service KeyManagerBuscaChaveGrpcService{
   rpc buscaPorChave (BuscaPorChavePixRequest) returns (DetalhesChavePixResponse){}
 }
 
