@@ -14,7 +14,7 @@ import kotlin.reflect.KClass
 @Retention(AnnotationRetention.RUNTIME)
 @Constraint(validatedBy = [ValidaChaveValidator::class])
 annotation class ValidaChave(
-    val message: String = "Chave pix informada não é válida (\$validatedValue.tipo)",
+    val message: String = "Chave pix informada não é válida. Verifique se a chave corresponde ao seu tipo",
     val groups: Array<KClass<Any>> = [],
     val payload: Array<KClass<Payload>> = []
 )
@@ -36,5 +36,4 @@ class ValidaChaveValidator : ConstraintValidator<ValidaChave, CadastraChaveReque
         return value.tipoDeChave.valida(value.chave)
 
     }
-
 }
