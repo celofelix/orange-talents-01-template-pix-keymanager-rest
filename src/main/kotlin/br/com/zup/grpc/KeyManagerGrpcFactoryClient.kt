@@ -18,8 +18,9 @@ class KeyManagerGrpcFactoryClient(@GrpcChannel(value = "keyManager") val channel
     @Singleton
     fun excluiChave() = KeyManagerExcluiGrpcServiceGrpc.newBlockingStub(channel)
 
+
     @Singleton
-    fun buscaPorChaveID() = KeyManagerBuscaChavePorIDGrpcServiceGrpc.newBlockingStub(channel)
+    fun buscaID() = KeyManagerBuscaChavePorIDGrpcServiceGrpc.newBlockingStub(channel)
 
     @Singleton
     fun listaChaves() = KeyManagerListaChavesGrpcServiceGrpc.newBlockingStub(channel)

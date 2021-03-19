@@ -13,7 +13,7 @@ import javax.inject.Inject
 @Validated
 @Controller("/deleta/pix/{pixId}")
 class ExcluiChaveController(
-    @Inject val excluiChaveClient:
+    @Inject private val excluiChaveClient:
     KeyManagerExcluiGrpcServiceGrpc.KeyManagerExcluiGrpcServiceBlockingStub
 ) {
 
