@@ -1,7 +1,7 @@
 package br.com.zup.cadastra
 
 import br.com.zup.CadastraChavePixRequest
-import br.com.zup.cadastra.validacoes.ValidaChave
+import br.com.zup.validacoes.ValidaChave
 import io.micronaut.core.annotation.Introspected
 import java.util.*
 import javax.validation.constraints.NotNull

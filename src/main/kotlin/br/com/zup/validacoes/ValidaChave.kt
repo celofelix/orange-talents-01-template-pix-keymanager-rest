@@ -1,4 +1,4 @@
-package br.com.zup.cadastra.validacoes
+package br.com.zup.validacoes
 
 import br.com.zup.cadastra.CadastraChaveRequest
 import io.micronaut.core.annotation.AnnotationValue
