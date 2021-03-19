@@ -1,0 +1,109 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "br.com.zup";
+option java_outer_classname = "KeyManagerGrpc";
+import "google/protobuf/timestamp.proto";
+
+package br.com.zup;
+
+service KeyManagerCadastraGrpcService {
+  rpc registra (CadastraChavePixRequest) returns (CadastraChavePixResponse) {}
+}
+
+service KeyManagerExcluiGrpcService{
+  rpc exclui (ExcluiChavePixRequest) returns (ExcluiChavePixResponse){}
+}
+
+service KeyMananerBuscaChavePorIDGrpcService{
+  rpc buscaChavePorID (BuscaChavePorIDPixRequest) returns (DetalhesChavePixResponse){}
+}
+
+service KeyMananerBuscaChaveGrpcService{
+  rpc buscaPorChave (BuscaPorChavePixRequest) returns (DetalhesChavePixResponse){}
+}
+
+service KeyManagerListaChavesGrpcService {
+  rpc listaChaves (ListaChavesPixRequest) returns (ListaChavesResponse) {}
+}
+
+enum TipoDeChave {
+  CHAVE_SEM_TIPO = 0;
+  CPF = 1;
+  CELULAR = 2;
+  EMAIL = 3;
+  ALEATORIA = 4;
+}
+
+enum TipoDeConta {
+  CONTA_SEM_TIPO = 0;
+  CONTA_CORRENTE = 1;
+  CONTA_POUPANCA = 2;
+}
+
+message CadastraChavePixRequest {
+  string clienteId = 1;
+  TipoDeChave tipoDeChave = 2;
+  string chave = 3;
+  TipoDeConta tipoDeConta = 4;
+}
+
+message CadastraChavePixResponse {
+  string clienteId = 1;
+  string pixId = 2;
+}
+
+message ExcluiChavePixRequest {
+  string pixId = 1;
+  string clienteId = 2;
+}
+
+message ExcluiChavePixResponse {
+  string pixId = 1;
+  string clienteId = 2;
+}
+
+message BuscaChavePorIDPixRequest{
+  string clienteId = 1;
+  string pixId = 2;
+}
+
+message DetalhesChavePixResponse {
+  string pixId = 1;
+  string clienteId = 2;
+  string tipoDeChave = 3;
+  string chave = 4;
+  Conta conta = 5;
+  google.protobuf.Timestamp criadaEm = 6;
+}
+
+message Conta {
+  string titular = 1;
+  string cpf = 2;
+  string instituicao = 3;
+  string agencia = 4;
+  string numeroConta = 5;
+  string tipo = 6;
+}
+
+message BuscaPorChavePixRequest {
+  string chave = 1;
+}
+
+message ListaChavesPixRequest {
+  string clienteId = 1;
+}
+
+message ListaChavesResponse {
+
+  message ChavesPix {
+    string pixId = 1;
+    string tipoChave = 2;
+    string chave = 3;
+    string tipoConta = 4;
+    google.protobuf.Timestamp criadaEm = 5;
+  }
+
+  string clienteId = 1;
+  repeated ChavesPix chaves = 2;
+}
