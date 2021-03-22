@@ -12,10 +12,10 @@ import javax.inject.Inject
 @Validated
 @Controller("/pix")
 class BuscaChaveController(
-    @Inject val buscaClint:
+    @Inject val buscaClient:
     KeyManagerBuscaChavePorIDGrpcServiceGrpc.KeyManagerBuscaChavePorIDGrpcServiceBlockingStub,
-    @Inject val buscaPorChaveClint: KeyManagerBuscaChaveGrpcServiceGrpc.KeyManagerBuscaChaveGrpcServiceBlockingStub,
-    @Inject val listaChaves: KeyManagerListaChavesGrpcServiceGrpc.KeyManagerListaChavesGrpcServiceBlockingStub
+    @Inject val buscaPorChaveClient: KeyManagerBuscaChaveGrpcServiceGrpc.KeyManagerBuscaChaveGrpcServiceBlockingStub,
+    @Inject val listaChavesClient: KeyManagerListaChavesGrpcServiceGrpc.KeyManagerListaChavesGrpcServiceBlockingStub
 ) {
 
     @Get(value = "/{pixId}/cliente/{clienteId}")
@@ -29,7 +29,7 @@ class BuscaChaveController(
             .setPixId(pixId.toString())
             .build()
 
-        val response = buscaClint.buscaChavePorID(buscaRequest)
+        val response = buscaClient.buscaChavePorID(buscaRequest)
 
         return HttpResponse.ok(DetalhesChaveResponse(response))
     }
@@ -41,9 +41,22 @@ class BuscaChaveController(
             .setChave(chave)
             .build()
 
-        val chaveResponse = buscaPorChaveClint.buscaPorChave(buscaChaveRequest)
+        val chaveResponse = buscaPorChaveClient.buscaPorChave(buscaChaveRequest)
 
         return HttpResponse.ok(DetalhesChaveResponse(chaveResponse))
     }
 
+    @Get(value = "/cliente/{clienteId}")
+    fun listaChavesPorCliente(@PathVariable clienteId: UUID): HttpResponse<Any> {
+
+        val listaRequest = ListaChavesPixRequest.newBuilder()
+            .setClienteId(clienteId.toString())
+            .build()
+
+        val chavesResponse = listaChavesClient.listaChaves(listaRequest)
+
+        val listaChavesResponse = chavesResponse.chavesList.map { ListaDeChavesResponse(it) }
+
+        return HttpResponse.ok(listaChavesResponse)
+    }
 }
