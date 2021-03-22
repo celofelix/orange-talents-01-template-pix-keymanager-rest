@@ -7,10 +7,10 @@ import java.time.ZoneOffset
 
 class DetalhesChaveResponse(response: DetalhesChavePixResponse) {
 
-    val pixId = response.pixId
+    val pixId = response.pixId.toString()
     val clienteId = response.clienteId
-    val tipoDeChave = response.tipoDeChave
-    val chave = response.chave
+    val tipoDeChave = response.pixId
+    val chave = response.chave.toString()
     val conta = ContaResponse(
         response.conta.titular,
         response.conta.cpf,
