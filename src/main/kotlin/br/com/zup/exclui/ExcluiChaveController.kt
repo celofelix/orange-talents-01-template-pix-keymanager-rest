@@ -9,6 +9,8 @@ import io.micronaut.http.annotation.PathVariable
 import io.micronaut.validation.Validated
 import java.util.*
 import javax.inject.Inject
+import javax.validation.Valid
+import javax.validation.constraints.NotNull
 
 @Validated
 @Controller("/deleta/pix/{pixId}")
@@ -18,7 +20,7 @@ class ExcluiChaveController(
 ) {
 
     @Delete("/cliente/{clienteId}")
-    fun deleta(@PathVariable pixId: Long, @PathVariable clienteId: UUID): HttpResponse<Any> {
+    fun deleta(@Valid @PathVariable @NotNull pixId: Long, @PathVariable @NotNull clienteId: UUID): HttpResponse<Any> {
 
         val excluiChaveRequest = ExcluiChavePixRequest.newBuilder()
             .setPixId(pixId.toString())

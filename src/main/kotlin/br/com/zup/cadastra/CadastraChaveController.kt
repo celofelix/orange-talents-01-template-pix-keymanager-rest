@@ -10,6 +10,7 @@ import io.micronaut.http.uri.UriBuilder
 import io.micronaut.validation.Validated
 import java.util.*
 import javax.validation.Valid
+import javax.validation.constraints.NotNull
 
 @Validated
 @Controller("/cadastra/pix")
@@ -19,7 +20,10 @@ class CadastraChaveController(
 ) {
 
     @Post("/cliente/{clienteId}")
-    fun cadastra(@PathVariable clienteId: UUID, @Valid @Body request: CadastraChaveRequest): HttpResponse<Any>? {
+    fun cadastra(
+        @PathVariable @NotNull clienteId: UUID,
+        @Valid @Body request: CadastraChaveRequest
+    ): HttpResponse<Any>? {
 
         val chaveGrpc = request.toGrpc(clienteId)
         val response = cadastraPixClient.registra(chaveGrpc)

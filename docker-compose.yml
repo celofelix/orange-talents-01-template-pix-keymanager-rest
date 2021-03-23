@@ -1,0 +1,65 @@
+version: '3'
+services:
+  bcb:
+    image: "public.ecr.aws/d8b2x5c9/orange-stack-sat-bcb-pix"
+    ports:
+      - 8082:8082
+    networks:
+      - keymaganer-network
+
+  erp-itau:
+    image: "public.ecr.aws/d8b2x5c9/orange-stack-sat-itau-erp"
+    ports:
+      - 9091:9091
+    networks:
+      - keymaganer-network
+
+  mysql-keymanager:
+    image: mysql:latest
+    networks:
+      - keymaganer-network
+    container_name: mysql-keymanager
+    expose:
+      - 3306
+    ports:
+      - 3307:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=Celo@15204426
+      - MYSQL_DATABASE=chave_pix
+      - MYSQL_ROOT_HOST=%
+
+  grpc-keymanager:
+    depends_on:
+      - mysql-keymanager
+      - bcb
+      - erp-itau
+    restart: on-failure
+    image: keymanager-grpc
+    networks:
+      - keymaganer-network
+    container_name: grpc-keymanager
+    ports:
+      - 50051
+    environment:
+      BD_URL: mysql-keymanager
+      BD_PASSWORD: Celo@15204426
+      URL_ITAU: http://erp-itau:9091
+      URL_BCB: http://bcb:8082
+
+  rest-keymanager:
+    depends_on:
+      - grpc-keymanager
+      - mysql-keymanager
+    container_name: rest-keymanager
+    image: keymanager-rest
+    networks:
+      - keymaganer-network
+    ports:
+      - 8080:8080
+    environment:
+      URL_GRPC: grpc-keymanager:50051
+
+networks:
+  keymaganer-network:
+    driver: bridge
+
