@@ -16,8 +16,9 @@ import org.mockito.Mockito
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.random.Random
 
-@MicronautTest(transactional = false)
+@MicronautTest
 internal class CadastraChaveControllerTest {
 
     @field:Inject
@@ -31,7 +32,7 @@ internal class CadastraChaveControllerTest {
     fun `deve cadastrar uma chave pix request`() {
 
         val clientID = UUID.randomUUID().toString()
-        val pixID = UUID.randomUUID().toString()
+        val pixID = Random.nextLong(10).toString()
 
         /* Criando objeto que será a resposta no mock do serviço externo do grpc */
         val chaveResponse = CadastraChavePixResponse.newBuilder()
@@ -50,13 +51,13 @@ internal class CadastraChaveControllerTest {
             tipoDeConta = TipoContaRequest.CONTA_CORRENTE
         )
 
-        // Montando o método http da requisição com a uir do recurso e parametros que vão no corpo da requisição
+        /* Montando o método http da requisição com a uir do recurso e parametros que vão no corpo da requisição */
         val request = HttpRequest.POST("/cadastra/pix/cliente/${clientID}", chaveRequest)
 
-        // Executando a requisição para o endpoint rest
+        /*Executando a requisição para o endpoint rest */
         val response = clientHttp.toBlocking().exchange(request, CadastraChaveRequest::class.java)
 
-        // Validando a resposta do endpoint
+        /* Validando a resposta do endpoint */
         with(response) {
             Assertions.assertEquals(HttpStatus.CREATED, status)
             Assertions.assertTrue(headers.contains("Location"))

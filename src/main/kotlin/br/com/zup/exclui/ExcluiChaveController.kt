@@ -20,7 +20,7 @@ class ExcluiChaveController(
 ) {
 
     @Delete("/cliente/{clienteId}")
-    fun deleta(@Valid @PathVariable @NotNull pixId: Long, @PathVariable @NotNull clienteId: UUID): HttpResponse<Any> {
+    fun deleta(@PathVariable pixId: Long, @PathVariable clienteId: UUID): HttpResponse<Any> {
 
         val excluiChaveRequest = ExcluiChavePixRequest.newBuilder()
             .setPixId(pixId.toString())
