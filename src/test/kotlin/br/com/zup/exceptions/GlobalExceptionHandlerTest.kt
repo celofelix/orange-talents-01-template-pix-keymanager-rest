@@ -57,4 +57,19 @@ class GlobalExceptionHandlerTest {
         }
     }
 
+    @Test
+    fun `deve lacar 500 para StatusRuntimeException que nao foram esperadas`() {
+
+        val mensagem = "Erro inesperado ao cadastrar a chave pix"
+        val internalServerException = StatusRuntimeException(Status.INTERNAL.withDescription(mensagem))
+
+        val response = GlobalExceptionHandler().handle(request, internalServerException)
+
+        with(response) {
+            Assertions.assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, status)
+            Assertions.assertNotNull(body())
+            Assertions.assertEquals(mensagem, (body() as JsonError).message)
+        }
+    }
+
 }

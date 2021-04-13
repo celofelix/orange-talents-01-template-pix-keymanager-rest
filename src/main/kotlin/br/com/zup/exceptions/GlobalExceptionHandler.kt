@@ -24,7 +24,7 @@ class GlobalExceptionHandler : ExceptionHandler<StatusRuntimeException, HttpResp
             Status.NOT_FOUND.code -> HttpStatus.NOT_FOUND to description
             Status.INVALID_ARGUMENT.code -> HttpStatus.BAD_REQUEST to "Dados preenchidos inválidos"
             Status.ALREADY_EXISTS.code -> HttpStatus.UNPROCESSABLE_ENTITY to description
-            else -> HttpStatus.INTERNAL_SERVER_ERROR to "Erro ao cadastrar a chave"
+            else -> HttpStatus.INTERNAL_SERVER_ERROR to "Erro inesperado ao cadastrar a chave pix"
         }
 
         return HttpResponse
