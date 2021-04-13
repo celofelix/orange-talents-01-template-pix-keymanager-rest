@@ -18,16 +18,20 @@ import java.time.ZoneId
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.math.PI
 import kotlin.random.Random
 
 @MicronautTest
 internal class BuscaChaveControllerTest {
 
     @field:Inject
-    lateinit var buscaPorPixIDEClienteID: KeyManagerBuscaChavePorIDGrpcServiceGrpc.KeyManagerBuscaChavePorIDGrpcServiceBlockingStub
+    lateinit var buscaPorPixIDEClienteIDGrpc: KeyManagerBuscaChavePorIDGrpcServiceGrpc.KeyManagerBuscaChavePorIDGrpcServiceBlockingStub
 
     @field:Inject
-    lateinit var buscaPorChavePix: KeyManagerBuscaChaveGrpcServiceGrpc.KeyManagerBuscaChaveGrpcServiceBlockingStub
+    lateinit var buscaPorChavePixGrpc: KeyManagerBuscaChaveGrpcServiceGrpc.KeyManagerBuscaChaveGrpcServiceBlockingStub
+
+    @field:Inject
+    lateinit var listaChavesPixGrpc: KeyManagerListaChavesGrpcServiceGrpc.KeyManagerListaChavesGrpcServiceBlockingStub
 
     @field:Inject
     @field:Client("/")
@@ -43,7 +47,7 @@ internal class BuscaChaveControllerTest {
 
         val chavePixResponse = chavePixResponse()
 
-        Mockito.`when`(buscaPorPixIDEClienteID.buscaChavePorID(Mockito.any()))
+        Mockito.`when`(buscaPorPixIDEClienteIDGrpc.buscaChavePorID(Mockito.any()))
             .thenReturn(chavePixResponse)
 
         val request = HttpRequest.GET<Any>("/pix/${chavePixResponse.pixId}/cliente/${chavePixResponse.clienteId}")
@@ -61,7 +65,7 @@ internal class BuscaChaveControllerTest {
 
         val chavePixResponse = chavePixResponse()
 
-        Mockito.`when`(buscaPorChavePix.buscaPorChave(Mockito.any()))
+        Mockito.`when`(buscaPorChavePixGrpc.buscaPorChave(Mockito.any()))
             .thenReturn(chavePixResponse)
 
         val request = HttpRequest.GET<Any>("/pix/${chavePixResponse.chave}")
@@ -74,6 +78,24 @@ internal class BuscaChaveControllerTest {
         }
     }
 
+    @Test
+    fun `deve listar todas as chaves pix por ID do cliente`() {
+
+        val listaPixRespose = listaPixRespose()
+
+        Mockito.`when`(listaChavesPixGrpc.listaChaves(Mockito.any()))
+            .thenReturn(listaPixRespose)
+
+        val request = HttpRequest.GET<Any>("pix/cliente/${listaPixRespose.clienteId}")
+
+        val response = clientHttp.toBlocking().exchange(request, List::class.java)
+
+        with(response) {
+            Assertions.assertEquals(HttpStatus.OK, status)
+            Assertions.assertNotNull(body())
+            Assertions.assertEquals(listaPixRespose.chavesCount, body().size)
+        }
+    }
 
     @Factory
     @Replaces(factory = KeyManagerGrpcFactoryClient::class)
@@ -85,8 +107,11 @@ internal class BuscaChaveControllerTest {
         @Singleton
         fun buscaPorchaveStub() =
             Mockito.mock(KeyManagerBuscaChaveGrpcServiceGrpc.KeyManagerBuscaChaveGrpcServiceBlockingStub::class.java)
-    }
 
+        @Singleton
+        fun listaChavesStub() =
+            Mockito.mock(KeyManagerListaChavesGrpcServiceGrpc.KeyManagerListaChavesGrpcServiceBlockingStub::class.java)
+    }
 
     fun chavePixResponse(): DetalhesChavePixResponse {
         val criadaEm = LocalDateTime.now().atZone(ZoneId.of("UTC")).toInstant()
@@ -110,6 +135,36 @@ internal class BuscaChaveControllerTest {
                     .setNanos(criadaEm.nano)
                     .build()
             )
+            .build()
+    }
+
+    fun listaPixRespose(): ListaChavesResponse {
+
+        val criadaEm = LocalDateTime.now().atZone(ZoneId.of("UTC")).toInstant()
+
+        val chaveEmail = ListaChavesResponse.ChavesPix.newBuilder()
+            .setPixId(PIX_ID)
+            .setTipoChave(TipoDeChave.EMAIL.name)
+            .setChave("marcelo@gmail.com")
+            .setTipoConta(TipoDeConta.CONTA_CORRENTE.name)
+            .setCriadaEm(Timestamp.newBuilder()
+                .setSeconds(criadaEm.epochSecond)
+                .setNanos(criadaEm.nano))
+            .build()
+
+        val chaveAleatoria = ListaChavesResponse.ChavesPix.newBuilder()
+            .setPixId(PIX_ID)
+            .setTipoChave(TipoDeChave.ALEATORIA.name)
+            .setChave(UUID.randomUUID().toString())
+            .setTipoConta(TipoDeConta.CONTA_CORRENTE.name)
+            .setCriadaEm(Timestamp.newBuilder()
+                .setSeconds(criadaEm.epochSecond)
+                .setNanos(criadaEm.nano))
+            .build()
+
+        return ListaChavesResponse.newBuilder()
+            .setClienteId(CLIENTE_ID)
+            .addAllChaves(listOf(chaveEmail, chaveAleatoria))
             .build()
     }
 }
