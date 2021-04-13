@@ -27,6 +27,9 @@ internal class BuscaChaveControllerTest {
     lateinit var buscaPorPixIDEClienteID: KeyManagerBuscaChavePorIDGrpcServiceGrpc.KeyManagerBuscaChavePorIDGrpcServiceBlockingStub
 
     @field:Inject
+    lateinit var buscaPorChavePix: KeyManagerBuscaChaveGrpcServiceGrpc.KeyManagerBuscaChaveGrpcServiceBlockingStub
+
+    @field:Inject
     @field:Client("/")
     lateinit var clientHttp: HttpClient
 
@@ -51,15 +54,37 @@ internal class BuscaChaveControllerTest {
             Assertions.assertEquals(HttpStatus.OK, status)
             Assertions.assertNotNull(body())
         }
-
     }
+
+    @Test
+    fun `deve buscar uma chave pix pela chave`() {
+
+        val chavePixResponse = chavePixResponse()
+
+        Mockito.`when`(buscaPorChavePix.buscaPorChave(Mockito.any()))
+            .thenReturn(chavePixResponse)
+
+        val request = HttpRequest.GET<Any>("/pix/${chavePixResponse.chave}")
+
+        val response = clientHttp.toBlocking().exchange(request, Any::class.java)
+
+        with(response) {
+            Assertions.assertEquals(HttpStatus.OK, status)
+            Assertions.assertNotNull(body())
+        }
+    }
+
 
     @Factory
     @Replaces(factory = KeyManagerGrpcFactoryClient::class)
-    class BuscaPorPixIDEClientID {
+    class BuscaPorPixIDEClientIDStub {
         @Singleton
         fun buscaPorPixIDStub() =
             Mockito.mock(KeyManagerBuscaChavePorIDGrpcServiceGrpc.KeyManagerBuscaChavePorIDGrpcServiceBlockingStub::class.java)
+
+        @Singleton
+        fun buscaPorchaveStub() =
+            Mockito.mock(KeyManagerBuscaChaveGrpcServiceGrpc.KeyManagerBuscaChaveGrpcServiceBlockingStub::class.java)
     }
 
 
@@ -87,5 +112,4 @@ internal class BuscaChaveControllerTest {
             )
             .build()
     }
-
 }
