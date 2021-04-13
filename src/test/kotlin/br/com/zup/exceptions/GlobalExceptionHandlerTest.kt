@@ -8,6 +8,7 @@ import io.micronaut.http.hateoas.JsonError
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
+
 class GlobalExceptionHandlerTest {
 
     val request = HttpRequest.GET<Any>("/")
