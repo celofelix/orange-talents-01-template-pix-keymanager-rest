@@ -19,6 +19,7 @@ class GlobalExceptionHandler : ExceptionHandler<StatusRuntimeException, HttpResp
 
         val status = exception.status.code
         val description = exception.status.description
+
         val (httpStatus, message) = when (status) {
             Status.NOT_FOUND.code -> HttpStatus.NOT_FOUND to description
             Status.INVALID_ARGUMENT.code -> HttpStatus.BAD_REQUEST to "Dados preenchidos inválidos"

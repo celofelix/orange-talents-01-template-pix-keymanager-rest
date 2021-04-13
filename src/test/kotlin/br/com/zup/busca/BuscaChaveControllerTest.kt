@@ -18,7 +18,6 @@ import java.time.ZoneId
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.math.PI
 import kotlin.random.Random
 
 @MicronautTest
