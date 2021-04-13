@@ -34,8 +34,6 @@ internal class ExcluiChaveControllerTest {
         val clienteID = UUID.randomUUID().toString()
         val pixID = Random.nextLong(10).toString()
 
-        println(pixID)
-
         val responsePix = ExcluiChavePixResponse.newBuilder()
             .setClienteId(clienteID)
             .setPixId(pixID)

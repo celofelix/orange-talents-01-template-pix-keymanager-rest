@@ -12,8 +12,7 @@ import javax.inject.Inject
 @Validated
 @Controller("/pix")
 class BuscaChaveController(
-    @Inject val buscaClient:
-    KeyManagerBuscaChavePorIDGrpcServiceGrpc.KeyManagerBuscaChavePorIDGrpcServiceBlockingStub,
+    @Inject val buscaClient: KeyManagerBuscaChavePorIDGrpcServiceGrpc.KeyManagerBuscaChavePorIDGrpcServiceBlockingStub,
     @Inject val buscaPorChaveClient: KeyManagerBuscaChaveGrpcServiceGrpc.KeyManagerBuscaChaveGrpcServiceBlockingStub,
     @Inject val listaChavesClient: KeyManagerListaChavesGrpcServiceGrpc.KeyManagerListaChavesGrpcServiceBlockingStub
 ) {
